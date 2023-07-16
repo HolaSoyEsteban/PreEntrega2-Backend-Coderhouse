@@ -1,53 +1,67 @@
-# Primera práctica integradora
+# Pre Entrega 2 de Backend
 
-Esta práctica integradora abarca varios temas importantes en el desarrollo de aplicaciones utilizando Node.js. A continuación, se detallan las habilidades que se deben adquirir en cada área:
+## Objetivos generales
 
-## Skills para Clases
-- Comprender el concepto de una clase.
-- Definición de una clase.
-- Creación de un Manager y comprensión de su funcionamiento.
-- Comprender el concepto de un constructor y saber cuándo definir una clase con o sin constructor.
-- Definición de propiedades para una clase usando `this`.
-- Definición de métodos en una clase.
-- Exportar e importar una clase entre diferentes archivos.
+En este proyecto, el objetivo principal es desarrollar una aplicación que permita gestionar productos y carritos utilizando MongoDB como sistema de persistencia principal. Para lograr esto, implementaremos todos los endpoints necesarios para realizar operaciones CRUD en productos y carritos.
 
-## Skills para Express
-- Saber definir una carpeta `src` para tu proyecto.
-- Instalar Express con npm.
-- Importar Express en nuestro archivo principal.
-- Comprender el modelo request - response y aplicarlo en nuestra app.
-- Poner a escuchar nuestro servidor en un puerto específico.
-- Configurar Express para recibir JSONs en las request.
-- Manejo de `req.query`, `req.params` y `req.body`.
-- Comprender el formato y códigos de status para respuestas.
+## Objetivos específicos
 
-## Skills para Router y Multer
-- Comprender el concepto de Router.
-- Comprender la arquitectura de carpetas y usar las carpetas "routes", "public" y "files".
-- Definir un router de Express.
-- Importar y exportar tu router correctamente.
-- Utilizar el router como middleware a partir de `app.use`.
-- Comprender la configuración de Multer.
-- Exportar un uploader de Multer dentro de tu archivo `utils.js`.
-- Usar Multer a partir de FormData.
+- Profesionalizar las consultas de productos con filtros, paginación y ordenamientos.
+- Implementar la gestión de carritos con los últimos conceptos aprendidos.
 
-## Skills para Handlebars
-- Comprender el uso de un motor de plantillas.
-- Separar la arquitectura con una carpeta "public" y "views".
-- Setear nuestras primeras vistas en Handlebars.
-- Uso de `{{}}` para definir elementos variables en la plantilla.
-- Manejar el paso de información a la plantilla.
-- Setear un router exclusivo para vistas.
-- Importar CSS y JS desde la carpeta "public".
+## Entrega del proyecto
 
-## Skills para MongoDB y Mongoose
-- Comprender el uso de una base de datos.
-- Comprender el modelo de bases de datos no relacional.
-- Instalar MongoDB y configurar una base de datos en MongoAtlas.
-- Conocer el lenguaje de consultas básico para realizar un CRUD en MongoDB.
-- Instalar Mongoose con npm en tu proyecto de Node.js.
-- Definir esquemas y separar la lógica en una carpeta "models".
-- Exportar un modelo de Mongoose e importarlo para utilizarlo.
-- Saber realizar un CRUD con Mongoose en Node.js.
+Para entregar el proyecto, realizaremos los siguientes cambios:
 
-¡Puedes revisar las clases mencionadas para obtener más información y profundizar en cada uno de los temas mencionados!
+### Endpoints de productos
+
+Modificaremos el método `GET /api/products` para que cumpla con los siguientes puntos:
+
+- Se podrá recibir por query params un `limit` (opcional), una `page` (opcional), un `sort` (opcional) y un `query` (opcional).
+- El `limit` permitirá devolver solo el número de elementos solicitados al momento de la petición, en caso de no recibir `limit`, este será de 10.
+- La `page` permitirá devolver la página que queremos buscar, en caso de no recibir `page`, esta será de 1.
+- El `query` permitirá filtrar los productos por categoría o por disponibilidad, en caso de no recibir `query`, se realizará una búsqueda general.
+- El `sort` permitirá realizar un ordenamiento ascendente o descendente por precio, en caso de no recibir `sort`, no se realizará ningún ordenamiento.
+
+El método `GET /api/products` deberá devolver un objeto con el siguiente formato:
+
+```json
+{
+  "status": "success/error",
+  "payload": "Resultado de los productos solicitados",
+  "totalPages": "Total de páginas",
+  "prevPage": "Página anterior",
+  "nextPage": "Página siguiente",
+  "page": "Página actual",
+  "hasPrevPage": "Indicador para saber si la página previa existe",
+  "hasNextPage": "Indicador para saber si la página siguiente existe.",
+  "prevLink": "Link directo a la página previa (null si hasPrevPage=false)",
+  "nextLink": "Link directo a la página siguiente (null si hasNextPage=false)"
+}
+```
+
+### Endpoints de carritos
+
+Agregaremos los siguientes endpoints al router de carritos:
+
+- `DELETE /api/carts/:cid/products/:pid`: Eliminará del carrito el producto seleccionado.
+- `PUT /api/carts/:cid`: Actualizará el carrito con un arreglo de productos con el formato especificado.
+- `PUT /api/carts/:cid/products/:pid`: Podrá actualizar SOLO la cantidad de ejemplares del producto por cualquier cantidad pasada desde `req.body`.
+- `DELETE /api/carts/:cid`: Eliminará todos los productos del carrito.
+
+Además, en el modelo de Carts, la propiedad `products` deberá contener IDs que hagan referencia al modelo de Products. Modificaremos la ruta `/:cid` para que, al traer todos los productos, se realice un "populate" para obtener los productos completos mediante sus IDs.
+
+### Vistas
+
+Crearemos una vista en el router de vistas `/products` para visualizar todos los productos con su respectiva paginación. Cada producto mostrado podrá resolverse de dos formas:
+
+1. Llevar a una nueva vista con el producto seleccionado, mostrando su descripción completa, detalles de precio, categoría, etc. Además de un botón para agregar al carrito.
+2. Contar con el botón de "agregar al carrito" directamente, sin necesidad de abrir una página adicional con los detalles del producto.
+
+Además, agregaremos una vista en `/carts/:cid` para visualizar un carrito específico, donde se listarán SOLO los productos que pertenezcan a dicho carrito.
+
+## Sugerencias
+
+- Habilitar comentarios en el archivo para facilitar la comprensión del código.
+- Mantener la lógica del negocio existente y enfocarse en la persistencia de datos.
+- Los nuevos endpoints deben seguir la misma estructura y lógica que hemos utilizado hasta ahora.
