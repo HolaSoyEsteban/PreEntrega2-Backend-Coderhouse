@@ -12,7 +12,7 @@
         </tr>
     </thead>
     <tbody>
-        {{#each products}}
+        {{#each docs}}
         <tr>
             <td>{{this.title}}</td>
             <td>{{this.description}}</td>
@@ -24,3 +24,12 @@
         {{/each}}
     </tbody>
 </table>
+
+<div>
+    {{#if hasPrevPage}}
+    <a href="{{ prevLink }}">Anterior</a>
+    {{/if}}
+    {{#if hasNextPage}}
+    <a href="{{ nextLink }}">Siguiente</a>
+    {{/if}}
+</div>
