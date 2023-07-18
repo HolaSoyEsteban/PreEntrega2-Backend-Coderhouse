@@ -1,6 +1,7 @@
 import { Router } from "express"
 import ProductManager from '../dao/fsManagers/ProductManager.js'
 import ProductModel from '../dao/models/product.model.js';
+import cartModel from "../dao/models/cart.model.js";
 
 const router = Router();
 
@@ -33,5 +34,18 @@ router.get('/', async (req, res) => {
       res.status(500).json({ error: 'Error al leer los productos en tiempo real' });
     }
   });
+
+  router.get('/carts/:cid', async (req, res) => {
+    try {
+      const id = req.params.cid
+      const result = await cartModel.findById(id).lean().exec();
+      if (result === null) {
+        return res.status(404).json({ status: 'error', error: 'Cart not found' });
+      }
+      res.render('carts', { cid: result._id, products: result.products });
+    } catch (error) {
+      res.status(500).json({ status: 'error', error: error.message });
+    }
+  })
   
   export default router;
