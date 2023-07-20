@@ -35,7 +35,21 @@ router.get('/', async (req, res) => {
     }
   });
 
+  router.get('/:cid', async (req, res) => {
+    try {
+      const id = req.params.cid
+      const result = await ProductModel.findById(id).lean().exec();
+      if (result === null) {
+        return res.status(404).json({ status: 'error', error: 'Product not found' });
+      }
+      res.render('productDetail', result);
+    } catch (error) {
+      res.status(500).json({ error: 'Error al leer los productos' });
+    }
+  })
+
   router.get('/carts/:cid', async (req, res) => {
+    // ID del carrito: 64a36d28ae5981f3f6e4488e
     try {
       const id = req.params.cid
       const result = await cartModel.findById(id).lean().exec();
